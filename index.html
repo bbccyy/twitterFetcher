@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+        <script type="text/javascript">
+            jQuery.expr[':'].Contains = function(a,i,m){
+                 return jQuery(a).text().toUpperCase().indexOf(m[3].toUpperCase())>=0;
+            };
+            function buildTable(tweets){
+                var iniTable = '<table><thead>'+ '<tr><th>' + 'name' +
+                                 '</th><th>' + 'screen name' + 
+                                 '</th><th>' + 'profile image' + 
+                                 '</th><th>' + 'content' + 
+                                 '</th><th>' + 'retweet count' +
+                                 '</th></tr></thead><tbody id="listTweets">';
+                $.each(tweets, function(i, item){
+                    
+                    iniTable += '<tr><td>'+ item.name +
+                    '</td><td>' + item.screen_name + 
+                    '</td><td>' + '<img src=' + item.profile_image + '>' + 
+                    '</td><td class="content">' + item.content +
+                    '</td><td>' + item.retweet_ct + 
+                    '</td></tr>';
+                });
+                iniTable += '</tbody></table>';
+                return iniTable;
+            }
+            
+            function set_trHTML(newval){
+                trHTML = newval;
+                trHTML_onchange();
+            }
+            
+            function trHTML_onchange(){
+                $(".show-tweets").html(
+                    "Your requesed tweets raw data:" + '<br>'
+                    + trHTML
+                );
+                myFilter_consecutive();
+            }
+            
+            function myFilter_parallel(){
+                var text = $('input[name=filter]').val().split(" ");
+                if(text == ""){
+                    var rows = $("#listTweets").find("tr").show();  
+                }
+                else{
+                    var rows = $("#listTweets").find("tr").hide();
+                    $.each(text, function(idx, value){
+                        if(value != ""){
+                            $("#listTweets td.content:Contains('" + value + "')").parent().show();
+                        }
+                    });
+                } 
+            }
+            
+            function myFilter_consecutive(){
+                var text = $('input[name=filter]').val();
+                if(text == ""){
+                    var rows = $("#listTweets").find("tr").show();  
+                }
+                else{
+                    var rows = $("#listTweets").find("tr").hide();
+                    $("#listTweets td.content:Contains('" + text + "')").parent().show();
+                    $("#listTweets td.content:Contains('" + text + "')").each(function(){
+                        //this.innerHTML = this.innerHTML.replace(text,"<span style='color:red'>"+text +"</span>");
+                        var reg = new RegExp('(' + text + ')', 'gi');
+                        this.innerHTML = this.innerHTML.replace(reg,"<span style='background-color:yellow'>$1</span>");
+                    });
+                } 
+            }
+            
+            var trHTML = ''; // output table
+            
+            $("document").ready(function executeQuery(){
+                var data = {
+                    "action" : "update"
+                };
+                $.ajax({
+                   type : "POST",
+                   url  : "Get10Tweets.php",
+                   data : data,
+                   success : function(v){
+                        var tweets = jQuery.parseJSON(v);
+                        set_trHTML(buildTable(tweets));
+                   }
+                });
+                setTimeout(executeQuery, 60000);
+            });
+            
+            $("document").ready(function(){
+                $('input[name=filter]').keyup(trHTML_onchange);
+            });
+            
+        </script>
+        <style>
+            table, th, td{
+                border: 1px solid black;
+            }
+        </style>
+    </head>
+    <body>
+        Search: <input type='text' name="filter" placeholder="word1 word2..."> <br/>
+        <div class="show-tweets"></div>
+    </body>
+</html>
