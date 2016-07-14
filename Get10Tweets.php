@@ -1,10 +1,10 @@
 <?php
 require_once( 'TwitterAPIExchange.php');
 $settings = array(
-    'oauth_access_token' => "751501782006763520-NMcLdqNBfwurxmmidPCnvp4vVZytsiy",
-    'oauth_access_token_secret' => "tbG9UNcQes4V0AthMrBYvxR57vCEfxBjKwhku8DKs9zHx",
-    'consumer_key' => "n7I8bDFRfG3k6kqyVqtIDYwpR",
-    'consumer_secret' => "wGnpQyXL3VlRzeGoOUWZzNAzEfBPdqrxI80yoclBC4yecaP3bB"
+    'oauth_access_token' => "753655120060112896-MDSFHABAfZ0u6SytFrs744dgh7u76yw",
+    'oauth_access_token_secret' => "Naw538wo9xjrMohfwcx116utovCDYZpSHeeQXUXUFZgWY",
+    'consumer_key' => "HPHdKEw6FNtoXBE4mbngLefTo",
+    'consumer_secret' => "Gf5aDy4JLfYkM9AImC1MwG9UxEMr5S7nqgconRb9L2ioLdahVp"
 );
          
 if(is_ajax()){
